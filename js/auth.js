@@ -1,40 +1,17 @@
-import { auth } from "../firebase/config.js";
+import { loginWithGoogle, logout } from "../firebase/authService.js";
 
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+// LOGIN
+const btn = document.getElementById("googleLogin");
 
-const provider = new GoogleAuthProvider();
-
-// 🔐 LOGIN GOOGLE
-const loginBtn = document.getElementById("googleLogin");
-
-if (loginBtn) {
-  loginBtn.addEventListener("click", async () => {
-    try {
-      await signInWithPopup(auth, provider);
-      window.location.href = "index.html";
-    } catch (error) {
-      console.error(error);
-      alert("Erreur connexion");
-    }
-  });
+if (btn) {
+  btn.onclick = async () => {
+    await loginWithGoogle();
+    window.location.href = "index.html";
+  };
 }
 
-// 🔄 VÉRIFIER UTILISATEUR
-onAuthStateChanged(auth, (user) => {
-
-  if (!user && !window.location.pathname.includes("login.html")) {
-    window.location.href = "login.html";
-  }
-
-});
-
-// 🚪 LOGOUT (optionnel)
+// LOGOUT GLOBAL
 window.logoutUser = async () => {
-  await signOut(auth);
+  await logout();
   window.location.href = "login.html";
 };
