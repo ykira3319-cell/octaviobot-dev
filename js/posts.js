@@ -1,26 +1,26 @@
+import { getPosts } from "../firebase/dbService.js";
 import { db, auth } from "../firebase/config.js";
 
 import {
-  collection,
-  getDocs,
   doc,
   updateDoc,
   increment,
   onSnapshot,
+  collection,
   addDoc,
   query
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const container = document.getElementById("postsContainer");
 
-// 🔥 CHARGER POSTS
+// LOAD POSTS
 async function loadPosts() {
 
-  const querySnapshot = await getDocs(collection(db, "posts"));
+  const snapshot = await getPosts();
 
   container.innerHTML = "";
 
-  querySnapshot.forEach((docSnap) => {
+  snapshot.forEach((docSnap) => {
 
     const post = docSnap.data();
     const postId = docSnap.id;
@@ -52,10 +52,7 @@ async function loadPosts() {
       </div>
     `;
 
-    // 🔁 écouter likes
     listenLikes(postId);
-
-    // 🔁 écouter commentaires
     listenComments(postId);
 
   });
@@ -64,67 +61,54 @@ async function loadPosts() {
 
 loadPosts();
 
-
-// ❤️ LIKE
+// LIKE
 window.likePost = async (postId) => {
-  const postRef = doc(db, "posts", postId);
-
-  await updateDoc(postRef, {
-    likes: increment(1)
-  });
+  const ref = doc(db, "posts", postId);
+  await updateDoc(ref, { likes: increment(1) });
 };
 
-
-// 🔁 TEMPS RÉEL LIKE
+// REALTIME LIKE
 function listenLikes(postId) {
+  const ref = doc(db, "posts", postId);
 
-  const postRef = doc(db, "posts", postId);
-
-  onSnapshot(postRef, (docSnap) => {
-    if (docSnap.exists()) {
+  onSnapshot(ref, (snap) => {
+    if (snap.exists()) {
       document.getElementById("likes-" + postId).innerText =
-        docSnap.data().likes || 0;
+        snap.data().likes || 0;
     }
   });
-
 }
 
-
-// 💬 AJOUT COMMENTAIRE
+// COMMENT
 window.addComment = async (postId) => {
 
   const input = document.getElementById("comment-" + postId);
   const text = input.value;
 
-  if (text === "") return;
+  if (!text) return;
 
   await addDoc(collection(db, "posts", postId, "comments"), {
-    text: text,
+    text,
     user: auth.currentUser.displayName
   });
 
   input.value = "";
 };
 
-
-// 🔁 TEMPS RÉEL COMMENTAIRES
+// REALTIME COMMENTS
 function listenComments(postId) {
 
   const q = query(collection(db, "posts", postId, "comments"));
 
-  onSnapshot(q, (snapshot) => {
+  onSnapshot(q, (snap) => {
 
-    const container = document.getElementById("comments-" + postId);
-    container.innerHTML = "";
+    const div = document.getElementById("comments-" + postId);
+    div.innerHTML = "";
 
-    snapshot.forEach((docSnap) => {
-      const c = docSnap.data();
-
-      container.innerHTML += `
-        <p><b>${c.user}:</b> ${c.text}</p>
-      `;
+    snap.forEach((doc) => {
+      const c = doc.data();
+      div.innerHTML += `<p><b>${c.user}</b>: ${c.text}</p>`;
     });
 
-  });
-
-                                         }
+  });c
+}
