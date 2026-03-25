@@ -1,11 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
+  <meta charset="UTF-8">
   <title>Admin</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
+
+<!-- ⏳ LOADER -->
+<div id="loader">
+  <div class="spinner"></div>
+  <div class="dots">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
 
 <h2>👑 Admin Panel</h2>
 
@@ -15,7 +26,13 @@
   <button type="submit">Publier</button>
 </form>
 
+<br>
+
+<button id="pauseBtn">PAUSE SITE</button>
+
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/admin.js"></script>
 <script type="module" src="js/adminPost.js"></script>
 
 </body>
-</html>
+    </html>
