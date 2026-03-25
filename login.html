@@ -1,15 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- ⏳ LOADER -->
+<div id="loader">
+  <div class="spinner"></div>
+  <div class="dots">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<h2>Connexion</h2>
+
 <button id="googleLogin">Connexion avec Gmail</button>
 
 <script type="module" src="js/auth.js"></script>
-<script type="module">
-import { auth } from "./firebase/config.js";
-import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const provider = new GoogleAuthProvider();
-
-document.getElementById("login").onclick = () => {
-  signInWithPopup(auth, provider).then(() => {
-    window.location = "index.html";
-  });
-};
-</script>
+</body>
+</html>
